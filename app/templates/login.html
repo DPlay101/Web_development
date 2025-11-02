@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+      <div class="container" style="color: #ffffff; padding-top: 30px;">
+        <h1 style="color: #d4af37; font-weight: bold; margin-bottom: 30px;">Авторизация пользователей</h1>
+        <form method = "POST">
+            <div class="mb-3">
+              <label for="exampleInputLogin" class="form-label" style="color: #d4af37;">Логин</label>
+              <input name="login" type="login" class="form-control" id="exampleInputLogin" aria-describedby="loginHelp" required>
+              <div id="loginHelp" class="form-text" style="color: #b0a57f;">Мы никогда не поделимся вашим логином с кем-то ещё.</div>
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label" style="color: #d4af37;">Пароль</label>
+              <input name="password" type="password" class="form-control" id="exampleInputPassword1" required>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="secretcheck">
+              <label name="secretcheck" class="form-check-label" for="secretcheck" style="color: #d4af37;">
+                Запомнить Меня 
+              </label>
+            </div>
+            
+            <button type="submit" style="background-color: #d4af37; color: #0f1b3c;" class="btn btn-primary">Отправить</button>
+          </form>
+          
+        
+    </div>
+{% endblock %}

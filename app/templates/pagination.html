@@ -1,0 +1,21 @@
+{% macro pagination(count, page, search_name='', search_author='', search_genres=[], search_years=[], pages_from='', pages_to='')%}
+    {% set start = [(page - 2), 1]|max %}
+    {% set end = [count, (page + 2)]|min %}
+
+    <nav aria-label="Page navigation example">
+        <!-- Пагинация: золотые элементы -->
+        <ul class="pagination justify-content-center mb-5">
+            <li class="page-item {% if page <= 1 %} disabled {% endif %}">
+                <a class="page-link" style="background-color: #1a2a4a; color: #d4af37; border-color: #d4af37;" href="{{url_for(request.endpoint, page=page-1, name=search_name, author=search_author, genres=search_genres, years=search_years, pages_from=pages_from, pages_to=pages_to)}}" tabindex="-1" aria-disabled="{{ 'true' if page <= 1 else 'false' }}">Назад</a>
+            </li>
+            {% for p in range(start, end+1) %}
+                <li class="page-item {% if page == p %} active {% endif %}">
+                    <a class="page-link" style="background-color: #1a2a4a; color: #d4af37; border-color: #d4af37;" href="{{url_for(request.endpoint, page=p, name=search_name, author=search_author, genres=search_genres, years=search_years, pages_from=pages_from, pages_to=pages_to)}}">{{p}}</a>
+                </li>
+            {% endfor %}
+            <li class="page-item {% if page >= count %} disabled {% endif %}">
+                <a class="page-link" style="background-color: #1a2a4a; color: #d4af37; border-color: #d4af37;" href="{{url_for(request.endpoint, page=page+1, name=search_name, author=search_author, genres=search_genres, years=search_years, pages_from=pages_from, pages_to=pages_to)}}" aria-disabled="{{ 'true' if page >= count else 'false' }}">Вперед</a>
+            </li>
+        </ul>
+    </nav>
+{% endmacro %}

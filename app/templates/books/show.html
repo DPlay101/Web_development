@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container my-3">
+        <table class="table" style="background-color: #1a2a4a; color: #ffffff;">
+            <thead style="background-color: #0f1b3c; border-bottom: 3px solid #d4af37;">
+              <tr style="border-bottom: 1px solid #d4af37;">
+                <th scope="col" style="color: #d4af37;">Название</th>
+                <th scope="col" style="color: #d4af37;">Автор</th>
+                <th scope="col" style="color: #d4af37;">Краткое описание</th>
+                <th scope="col" style="color: #d4af37;">Год издания</th>
+                <th scope="col" style="color: #d4af37;">Издательство</th>
+                <th scope="col" style="color: #d4af37;">Объем</th>
+                <th scope="col" style="color: #d4af37;">Жанр(ы)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #d4af37;">
+                <td style="color: #d4af37; font-weight: bold;">{{book.name}}</td>
+                <td>{{book.author}}</td>
+                <td>{{book.description}}</td>
+                <td>{{book.year}}</td>
+                <td>{{book.publishing}}</td>
+                <td>{{book.pages}}</td>
+                <td style="color: #d4af37;">{% for genre in genres %}<p> {{ genre }}</p> {% endfor %}</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+{% endblock %}

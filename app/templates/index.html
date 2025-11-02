@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% from '/pagination.html' import pagination %}
+{% block content %}
+    <div style="color: #ffffff" class="container">
+        <h3 class="text-center mb-4" style="color: #d4af37; font-weight: bold;">Книги</h3>
+        
+        <!-- Форма поиска -->
+        <div class="card mb-4" style="background-color: #1a2a4a; border: 2px solid #d4af37;">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #d4af37;">Поиск книг</h5>
+                <form method="GET" class="row g-3">
+                    <!-- Название -->
+                    <div class="col-md-6">
+                        <label for="name" class="form-label" style="color: #d4af37;">Название</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="name" 
+                            name="name" 
+                            placeholder="Введите название"
+                            value="{{ search_name }}"
+                            style="background-color: #0f1b3c; color: #ffffff; border-color: #d4af37;">
+                    </div>
+                    
+                    <!-- Автор -->
+                    <div class="col-md-6">
+                        <label for="author" class="form-label" style="color: #d4af37;">Автор</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="author" 
+                            name="author" 
+                            placeholder="Введите имя автора"
+                            value="{{ search_author }}"
+                            style="background-color: #0f1b3c; color: #ffffff; border-color: #d4af37;">
+                    </div>
+                    
+                    <!-- Жанр (мультиселект) -->
+                    <div class="col-md-6">
+                        <label for="genres" class="form-label" style="color: #d4af37;">Жанр</label>
+                        <select 
+                            multiple 
+                            class="form-select" 
+                            id="genres" 
+                            name="genres"
+                            style="background-color: #0f1b3c; color: #ffffff; border-color: #d4af37;">
+                            <option value="">-- Выберите жанры --</option>
+                            {% for genre in genres %}
+                                <option 
+                                    value="{{ genre.id }}"
+                                    {% if genre.id|string in search_genres %}selected{% endif %}>
+                                    {{ genre.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Год (мультиселект) -->
+                    <div class="col-md-6">
+                        <label for="years" class="form-label" style="color: #d4af37;">Год издания</label>
+                        <select 
+                            multiple 
+                            class="form-select" 
+                            id="years" 
+                            name="years"
+                            style="background-color: #0f1b3c; color: #ffffff; border-color: #d4af37;">
+                            <option value="">-- Выберите годы --</option>
+                            {% for year in years %}
+                                <option 
+                                    value="{{ year }}"
+                                    {% if year|string in search_years %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Объём от -->
+                    <div class="col-md-3">
+                        <label for="pages_from" class="form-label" style="color: #d4af37;">Объём от (стр.)</label>
+                        <input 
+                            type="number" 
+                            class="form-control" 
+                            id="pages_from" 
+                            name="pages_from" 
+                            placeholder="От"
+                            value="{{ pages_from }}"
+                            min="0"
+                            style="background-color: #0f1b3c; color: #ffffff; border-color: #d4af37;">
+                    </div>
+                    
+                    <!-- Объём до -->
+                    <div class="col-md-3">
+                        <label for="pages_to" class="form-label" style="color: #d4af37;">Объём до (стр.)</label>
+                        <input 
+                            type="number" 
+                            class="form-control" 
+                            id="pages_to" 
+                            name="pages_to" 
+                            placeholder="До"
+                            value="{{ pages_to }}"
+                            min="0"
+                            style="background-color: #0f1b3c; color: #ffffff; border-color: #d4af37;">
+                    </div>
+                    
+                    <!-- Кнопки -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary" style="background-color: #d4af37; color: #0f1b3c; font-weight: bold;">Найти</button>
+                        <a href="{{ url_for('index') }}" class="btn" style="background-color: #8b2e2e; color: #d4af37;">Сбросить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Список книг -->
+        {% if books %}
+            {% for book in books %}
+                <div class="row mb-3" style="background-color: #1a2a4a; padding: 15px; border-left: 4px solid #d4af37; border-radius: 5px;">
+                    <div class="col">
+                        <img src="static/img/book.png" height="230px" width="230px" alt="image"/>
+                    </div>
+                    <div class="col-6">
+                        <h4 style="color: #d4af37;">{{book.name}}</h4>
+                        <p style="color: #d4af37;">Автор: {{book.author}}</p>
+                        <p style="color: #d4af37;">Жанр(ы): {{book.genres}}</p>
+                        <p style="color: #d4af37;">{{book.description}}</p>
+                        <p style="color: #d4af37;">Год издания: {{book.year}}</p>
+                        <p style="color: #d4af37;">Объём: {{book.pages}} стр.</p>
+                    </div>
+                    <div class="col">
+                        {% if current_user.is_authenticated and current_user.can('show') %}
+                        <div>
+                            <a class="btn" style="background-color: #d4af37; color: #0f1b3c;" href="{{url_for('show', book_id=book.id)}}">Просмотр</a>
+                        </div>
+                        {% endif %}
+                        {% if current_user.is_authenticated and current_user.can('edit') %}
+                        <div>
+                            <a class="btn" style="background-color: #2e5f8b; color: #d4af37;" href="{{url_for('edit', book_id=book.id)}}">Редактирование</a>
+                        </div>
+                        {% endif %}
+                        {% if current_user.is_authenticated and current_user.can('delete') %}
+                        <div>
+                            <a class="btn delete" style="background-color: #8b2e2e; color: #ffffff;" data-bs-toggle="modal" data-bs-target="#deleteModal_{{book.id}}">Удаление</a>
+                        </div>
+                            <div class="modal fade" id="deleteModal_{{book.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content" style="background-color: #1a2a4a; border: 2px solid #d4af37;">
+                                        <div class="modal-header" style="border-bottom: 2px solid #d4af37;">
+                                            <h5 class="modal-title" id="deleteModalLabel" style="color: #d4af37;">Удаление книги</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="mx-auto my-5" style="color: #ffffff;">Вы уверены, что хотите удалить книгу "{{book.name}}"?</div>
+                                        <div class="modal-footer" style="border-top: 2px solid #d4af37;">
+                                            <a type="button" class="btn" style="background-color: #8b2e2e; color: #ffffff;" href="{{url_for('delete', book_id=book.id)}}">Да</a>
+                                            <a type="button" class="btn" style="background-color: #2e5f8b; color: #d4af37;" data-bs-dismiss="modal">Нет</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            {{pagination(count, page, search_name, search_author, search_genres, search_years, pages_from, pages_to)}}
+        {% else %}
+            <div class="alert" style="background-color: #2e5f8b; color: #d4af37; border-color: #d4af37;">
+                По вашему запросу книг не найдено.
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
